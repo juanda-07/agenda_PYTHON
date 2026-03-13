@@ -22,19 +22,19 @@ class Persona:
 
 
 #persistencia
-#crea una archivo llamado "ARCHIVO" y si ya existe escribe nuevo contenido 
+#lee los datos del archivop
 def cargar():
     try:
         with open(ARCHIVO, "r") as f:
-            datos = json.load(f) #convierte los datos a json y los escribe en el archivo
-            return [Persona(**d) for d in datos]  
+            datos = json.load(f) #lee el archivo json y convierte los datos a python
+            return [Persona(**d) for d in datos]  #desempaqueta el diccionario y crea un objeto para guardarlo en una lista
     except:
         return []  
     
 def guardar(personas):
-    with open(ARCHIVO, "w") as f:
-        json.dump([p.to_dict() for p in personas], f, indent=4)
-
+    with open(ARCHIVO, "w") as f: #abre el archivo json, si no existe lo crea y escibre en el
+        json.dump([p.to_dict() for p in personas], f, indent=4) #recorre las lista personas y luego conviete (p) en un diccionario
+                #[p.to_dict() for p in personas] los datos que se convirtieron emn diccionario json
 
 #controlador 
 class Controlador:
