@@ -2,12 +2,12 @@ import json
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+#archivo donde se guardan los datos
 ARCHIVO = "personas.json"
 
-
-
+#modelo
 class Persona:
-
+    #el contructor que inicializa y guarda los datos del objeto
     def __init__(self, id, nombres, apellidos, fecha, sexo, telefono):
         self.id = id
         self.nombres = nombres
@@ -16,33 +16,33 @@ class Persona:
         self.sexo = sexo
         self.telefono = telefono
 
+    #convierte el objeto en un diccionario
     def to_dict(self):
         return self.__dict__
 
 
-
+#persistencia
+#crea una archivo llamado "ARCHIVO" y si ya existe escribe nuevo contenido 
 def cargar():
-
     try:
         with open(ARCHIVO, "r") as f:
-            datos = json.load(f)
-            return [Persona(**d) for d in datos]
+            datos = json.load(f) #convierte los datos a json y los escribe en el archivo
+            return [Persona(**d) for d in datos]  
     except:
-        return []
-
-
+        return []  
+    
 def guardar(personas):
-
     with open(ARCHIVO, "w") as f:
         json.dump([p.to_dict() for p in personas], f, indent=4)
 
 
-
+#controlador 
 class Controlador:
 
     def __init__(self):
-        self.personas = cargar()
+        self.personas = cargar() 
 
+    # Genera ID automático
     def generar_id(self):
         return f"ID{len(self.personas)+1:03}"
 
@@ -66,9 +66,7 @@ class Controlador:
 
         return [p for p in self.personas if texto.lower() in p.nombres.lower()]
 
-
-
-
+#vista
 class Vista:
 
     def __init__(self, root, ctrl):
@@ -76,7 +74,7 @@ class Vista:
         self.ctrl = ctrl
         root.title("Agenda de Personas")
 
-        # campos
+        # Campos de entrada
         self.nom = tk.Entry(root)
         self.ape = tk.Entry(root)
         self.fecha = tk.Entry(root)
@@ -101,13 +99,12 @@ class Vista:
         tk.Label(root, text="Buscar").grid(row=5, column=0)
         self.buscar.grid(row=5, column=1)
 
-        # botones
         tk.Button(root, text="Guardar", command=self.guardar).grid(row=6, column=0)
         tk.Button(root, text="Buscar", command=self.buscar_persona).grid(row=6, column=1)
         tk.Button(root, text="Eliminar", command=self.eliminar).grid(row=6, column=2)
         tk.Button(root, text="Salir", command=root.quit).grid(row=6, column=3)
 
-        # tabla
+        #tabla donde se mue4stran los registros en la interfaz grafica
         self.tabla = ttk.Treeview(root, columns=("id","nom","ape","fecha","sexo","tel"), show="headings")
 
         for c in ("id","nom","ape","fecha","sexo","tel"):
@@ -117,6 +114,7 @@ class Vista:
 
         self.actualizar()
 
+
     def actualizar(self):
 
         for i in self.tabla.get_children():
@@ -124,6 +122,7 @@ class Vista:
 
         for p in self.ctrl.personas:
             self.tabla.insert("", tk.END, values=(p.id, p.nombres, p.apellidos, p.fecha, p.sexo, p.telefono))
+
 
     def guardar(self):
 
@@ -136,6 +135,7 @@ class Vista:
         )
 
         self.actualizar()
+
 
     def buscar_persona(self):
 
@@ -162,7 +162,7 @@ class Vista:
         self.actualizar()
 
 
-
+#main
 root = tk.Tk()
 
 ctrl = Controlador()
